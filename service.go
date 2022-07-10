@@ -1,6 +1,9 @@
 package main
 
-import "strings"
+import (
+	"errors"
+	"strings"
+)
 
 type StringService interface {
 	Uppercase(string) (string, error)
@@ -20,3 +23,5 @@ func (stringService) Uppercase(s string) (string, error) {
 func (stringService) Count(s string) int {
 	return len(s)
 }
+
+var ErrEmpty = errors.New("empty string")
