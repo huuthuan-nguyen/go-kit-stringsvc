@@ -1,18 +1,20 @@
 package main
 
 import (
-	"errors"
+	"github.com/go-kit/kit/log"
 	httptransport "github.com/go-kit/kit/transport/http"
-	"log"
 	"net/http"
+	"os"
 )
 
-var ErrEmpty = errors.New("empty string")
-
 func main() {
+	logger := log.NewLogfmtLogger(os.Stderr)
 
-	// make new service
-	svc := stringService{}
+	var svc StringService
+	// service
+	svc = stringService{}
+	// wrap service with logging middleware
+	svc = loggingMiddleware{logger, svc}
 
 	uppercaseHandler := httptransport.NewServer(
 		makeUppercaseEndpoint(svc), // endpoint
@@ -29,5 +31,5 @@ func main() {
 	// route
 	http.Handle("/uppercase", uppercaseHandler)
 	http.Handle("/count", countHandler)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	http.ListenAndServe(":8080", nil)
 }
