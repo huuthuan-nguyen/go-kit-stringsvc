@@ -49,9 +49,9 @@ func main() {
 	// wrap service with proxy
 	svc = proxyingMiddleware(context.Background(), *proxy, logger)(svc)
 	// wrap service with logging middleware
-	svc = loggingMiddleware{logger, svc}
+	svc = loggingMiddleware(logger)(svc)
 	// wrap service with instrumenting middleware
-	svc = instrumentingMiddleware{requestCount, requestLatency, countResult, svc}
+	svc = instrumentingMiddleware(requestCount, requestLatency, countResult)(svc)
 
 	uppercaseHandler := httptransport.NewServer(
 		makeUppercaseEndpoint(svc), // endpoint
